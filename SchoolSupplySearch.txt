@@ -5,7 +5,7 @@ itemName = ["2pk black ballpoint pen", "3pk black blue red variety pens",
     "10pk type 2 pencils", "3pk pink yellow orange highlighters", "3 inch binder",
     "2 inch binder", "1.5 inch binder", "2pk 3 inch binder", "bass boosted earbuds"]
 itemTypes = ["Pens", "Erasers", "Mechanical Pencils", "Pencils", "Highlighters", "Binders", "Electronics"]
-itemType = [0, 0, 1, 1, 0, 2, 2, 1, 1, 4, 3, 4, 5, 5, 5, 5, 6]
+itemTypeNumbers = [0, 0, 1, 1, 0, 2, 2, 1, 1, 4, 3, 4, 5, 5, 5, 5, 6]
 itemPrice = [5.99, 7.99, 1.99, 4.99, 9.99, 4.59, 8.99, 3.99, 3.49, 11.99, 4.99, 5.99, 4.99, 4.59, 3.99, 7.99, 9.99] 
 
 def main():
@@ -13,7 +13,15 @@ def main():
     while repeat:
         search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
         search.Search()
-        search.displayTopFive()
+        Inrepeat = True
+        while Inrepeat:
+            search.displayTopFive()
+            choice = OrderChoice()
+            if choice < 6:
+                search.completeOrder(choice)
+                Inrepeat = False
+            else:
+                search.sortOrder(choice)
         check = input("Enter 1 to continue: \n")
         if check != 1:
             repeat = False
@@ -63,31 +71,48 @@ class Search:
         for x in range(0, len(self.topFiveItem)):
             self.topFiveItem[x] = itemName[itemWeightDelete.index(itemWeightCopy[x])]
             itemWeightDelete.pop(itemWeightDelete.index(itemWeightCopy[x]))
-        repeat = True
-        while repeat:
-            for x in range(0, len(self.topFiveItem)):
+        for x in range(0, len(self.topFiveItem)):
                 y = x + 1
                 print(y, ". " + self.topFiveItem[x].title() + " - ", itemPrice[itemName.index(self.topFiveItem[x])])
-            response = int(input("Please enter the number corresponding to your selection, if you would like to sort; enter 0: \n"))
-            if 0 < response < 6:
-                completeOrder()
-                break;
-            elif response == 0:
-                sortRepeat = True
-                if sortRepeat:
-                    sortType = input("Please enter 1 for price sorting, or 2 for type sorting")
-                    if sortType == 1 or sortType == 2:
-                        sortRepeat = False
-                        sortOrder(sortType)
 
-                
-
-
-            repeat = False
-
-    def completeOrder(self):
-        print("Order Complete")
+    def completeOrder(self, index):
+        print("Your order of " + self.topFiveItem[index] + " will cost $", itemPrice[itemName.index(topFiveItem[index])] + "\n Thanks for your order, have a good day") 
+    
+    def getTopFiveItem(self):
+        return self.topFiveItem
     
     def sortOrder(self, sortType):
-        print("Order sorting")
+        if sortType == 6:
+            topFivePrice = ["", "", "", "", ""]
+            for x in range(0, len(self.topFiveItem)):
+                topFivePrice[x] = itemPrice[itemName.index(self.topFiveItem[x])]
+            topFivePriceCopy = topFivePrice.copy()
+            topFivePriceCopy.sort(reverse = True)
+            topFiveItemCopy = self.topFiveItem.copy()
+            for y in range(0, len(self.topFiveItem)):
+                self.topFiveItem[y] = topFiveItemCopy[topFivePrice.index(topFivePriceCopy[y])]
+            print(self.topFiveItem)
+        else:
+            for y in range(0, len(itemTypes)):
+                print(y + 1, " ." + itemTypes[y])
+            type  = int(input("Please enter the number corresponding to the desired item type")) - 1
+            popcount = 0
+            for x in range(0, 5):
+                if itemTypeNumbers[itemName.index(self.topFiveItem)] != type:
+                    self.topFiveItem.pop(x - popcount)
+                    popcount=+1
+
+def OrderChoice():
+    repeat = True
+    while repeat:
+        response = int(input("Please enter the number corresponding to your selection, if you would like to sort; enter 0: \n"))
+        if 0 < response < 6:
+            return response
+        elif response == 0:
+            sortRepeat = True
+            if sortRepeat:
+                sortType = int(input("Please enter 6 for price sorting, or 7 for type sorting"))
+                if sortType == 6 or sortType == 7:
+                    return sortType
+
 main()
