@@ -1,0 +1,55 @@
+itemName = ["2pk black ballpoint pen", "3pk black blue red variety pens",
+    "latex free pink eraser", "3pk high-polymer eraser", "15pk rainbow gel pens",
+    "steel mechanical pencil with extra led and erasers", "20pk multicolor mechanical pencils",
+    "white out liquid", "white out strips", "10pk rainbow variety mini - highlighters", 
+    "10pk type 2 pencils", "3pk pink yellow orange highlighters", "3 inch binder",
+    "2 inch binder", "1.5 inch binder", "2pk 3 inch binder", "bass boosted earbuds"]
+itemTypes = ["Pens", "Erasers", "Mechanical Pencils", "Pencils", "Highlighters", "Binders", "Electronics"]
+itemType = [0, 0, 1, 1, 0, 2, 2, 1, 1, 4, 3, 4, 5, 5, 5, 5, 6]
+itemPrice = [5.99, 7.99, 1.99, 4.99, 9.99, 4.59, 8.99, 3.99, 3.49, 11.99, 4.99, 5.99, 4.99, 4.59, 3.99, 7.99, 9.99] 
+
+def main():
+    repeat = True
+    while repeat:
+        search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
+        search.Search()
+
+
+class Search:
+    itemWeight = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    topFiveItem = ["", "", "", "", ""]
+
+    def __init__(self, query):
+        self.query = query
+
+    def Search(self):
+        userSearchSep = self.query.split()
+        #For each item in database
+        for x in range (0, len(itemName)):
+            #Seperates current by word.
+            currentCompare = itemName[x].split()
+            #For each word in current.
+            for y in range (0, len(currentCompare)):
+                #For each word in user search
+                for i in range (0, len(userSearchSep)):
+                    currentUserSearch = userSearchSep[i]
+                    #If current words are equivalent
+                    if currentUserSearch == currentCompare[y]:
+                        #Add 100 to weight
+                        self.itemWeight[x] += 100
+        #Removes spaces between words
+        userSearchCondense = self.query.replace(" ", "")
+        #For each item in database
+        for y in range(0, len(itemName)):
+            #Removes spaces between words
+            currentCompareCondense = itemName[y].replace(" ", "")
+            #For each character in compare
+            for x in range(0, len(currentCompareCondense)):
+                #For each character in user search
+                for i in range(0, len(userSearchCondense)):
+                    #If characters in user search and compare are equivalent
+                    if userSearchCondense[i] ==  currentCompareCondense[x]:
+                        #Add 1 to weight
+                        self.itemWeight[y] += 1
+        print(self.itemWeight)
+main()
