@@ -13,6 +13,10 @@ def main():
     while repeat:
         search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
         search.Search()
+        search.displayTopFive()
+        check = input("Enter 1 to continue: \n")
+        if check != 1:
+            repeat = False
 
 
 class Search:
@@ -51,5 +55,39 @@ class Search:
                     if userSearchCondense[i] ==  currentCompareCondense[x]:
                         #Add 1 to weight
                         self.itemWeight[y] += 1
-        print(self.itemWeight)
+
+    def displayTopFive(self):
+        itemWeightDelete = self.itemWeight.copy()
+        itemWeightCopy = self.itemWeight.copy()
+        itemWeightCopy.sort(reverse = True)
+        for x in range(0, len(self.topFiveItem)):
+            self.topFiveItem[x] = itemName[itemWeightDelete.index(itemWeightCopy[x])]
+            itemWeightDelete.pop(itemWeightDelete.index(itemWeightCopy[x]))
+        repeat = True
+        while repeat:
+            for x in range(0, len(self.topFiveItem)):
+                y = x + 1
+                print(y, ". " + self.topFiveItem[x].title() + " - ", itemPrice[itemName.index(self.topFiveItem[x])])
+            response = int(input("Please enter the number corresponding to your selection, if you would like to sort; enter 0: \n"))
+            if 0 < response < 6:
+                completeOrder()
+                break;
+            elif response == 0:
+                sortRepeat = True
+                if sortRepeat:
+                    sortType = input("Please enter 1 for price sorting, or 2 for type sorting")
+                    if sortType == 1 or sortType == 2:
+                        sortRepeat = False
+                        sortOrder(sortType)
+
+                
+
+
+            repeat = False
+
+    def completeOrder(self):
+        print("Order Complete")
+    
+    def sortOrder(self, sortType):
+        print("Order sorting")
 main()
