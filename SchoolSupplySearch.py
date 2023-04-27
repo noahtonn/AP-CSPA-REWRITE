@@ -9,22 +9,17 @@ itemTypeNumbers = [0, 0, 1, 1, 0, 2, 2, 1, 1, 4, 3, 4, 5, 5, 5, 5, 6]
 itemPrice = [5.99, 7.99, 1.99, 4.99, 9.99, 4.59, 8.99, 3.99, 3.49, 11.99, 4.99, 5.99, 4.99, 4.59, 3.99, 7.99, 9.99] 
 
 def main():
-    repeat = True
-    while repeat:
-        search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
-        search.Search()
-        Inrepeat = True
-        while Inrepeat:
-            search.displayTopFive()
-            choice = OrderChoice()
-            if choice < 6:
-                search.completeOrder(choice)
-                Inrepeat = False
-            else:
-                search.sortOrder(choice)
-        check = input("Enter 1 to continue: \n")
-        if check != 1:
-            repeat = False
+    search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
+    search.Search()
+    Inrepeat = True
+    while Inrepeat:
+        search.displayTopFive()
+        choice = OrderChoice()
+        if choice < 6:
+            search.completeOrder(choice)
+            Inrepeat = False
+        else:
+            search.sortOrder(choice)
 
 
 class Search:
@@ -76,7 +71,7 @@ class Search:
                 print(y, ". " + self.topFiveItem[x].title() + " - ", itemPrice[itemName.index(self.topFiveItem[x])])
 
     def completeOrder(self, index):
-        print("Your order of " + self.topFiveItem[index - 1] + " will cost $", itemPrice[itemName.index(self.topFiveItem[index - 1])], "\n Thanks for your order, have a good day") 
+        print("Your order of " + self.topFiveItem[index - 1] + " will cost $", itemPrice[itemName.index(self.topFiveItem[index - 1])], "\nThanks for your order, have a good day") 
     
     def getTopFiveItem(self):
         return self.topFiveItem
@@ -87,21 +82,21 @@ class Search:
             for x in range(0, len(self.topFiveItem)):
                 topFivePrice[x] = itemPrice[itemName.index(self.topFiveItem[x])]
             topFivePriceCopy = topFivePrice.copy()
-            topFivePriceCopy.sort(reverse = True)
+            topFivePriceCopy.sort()
             topFiveItemCopy = self.topFiveItem.copy()
-            PricePopCount = 0
             for y in range(0, len(self.topFiveItem)):
                 self.topFiveItem[y] = topFiveItemCopy[topFivePrice.index(topFivePriceCopy[y])]
                 topFivePrice[topFivePrice.index(topFivePriceCopy[y])] = 0
         else:
             for y in range(0, len(itemTypes)):
-                print(y + 1, " ." + itemTypes[y])
-            type  = int(input("Please enter the number corresponding to the desired item type")) - 1
-            Typepopcount = 0
-            for x in range(0, 5):
-                if itemTypeNumbers[itemName.index(self.topFiveItem)] != type:
-                    self.topFiveItem.pop(x - Typepopcount)
-                    Typepopcount=+1
+                print(y + 1, ". " + itemTypes[y])
+            type  = int(input("Please enter the number corresponding to the desired item type: \n")) - 1
+            if 0 < type < 8:
+                typePopCount = 0
+                for x in range(0, 5):
+                    if itemTypeNumbers[itemName.index(self.topFiveItem[x - typePopCount])] != type:
+                        self.topFiveItem.pop(x - typePopCount)
+                        typePopCount+=1
 
 def OrderChoice():
     repeat = True
