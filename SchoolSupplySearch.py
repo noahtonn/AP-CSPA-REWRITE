@@ -1,3 +1,4 @@
+#Global variables
 itemName = ["2pk black ballpoint pen", "3pk black blue red variety pens",
     "latex free pink eraser", "3pk high-polymer eraser", "15pk rainbow gel pens",
     "steel mechanical pencil with extra led and erasers", "20pk multicolor mechanical pencils",
@@ -8,6 +9,7 @@ itemTypes = ["Pens", "Erasers", "Mechanical Pencils", "Pencils", "Highlighters",
 itemTypeNumbers = [0, 0, 1, 1, 0, 2, 2, 1, 1, 4, 3, 4, 5, 5, 5, 5, 6]
 itemPrice = [5.99, 7.99, 1.99, 4.99, 9.99, 4.59, 8.99, 3.99, 3.49, 11.99, 4.99, 5.99, 4.99, 4.59, 3.99, 7.99, 9.99] 
 
+#Function for orchestrating search sequence.
 def main():
     search = Search(input("Welcome to The School Supply Store, please enter your search: \n"))
     search.Search()
@@ -21,43 +23,35 @@ def main():
         else:
             search.sortOrder(choice)
 
-
+#Search class
 class Search:
     itemWeight = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     topFiveItem = ["", "", "", "", ""]
 
+    #Initialization function
     def __init__(self, query):
         self.query = query
 
+    #Weighting algorithm
     def Search(self):
+        #Word weight, checks for similarities between whole words of the users query and the items in the list.
         userSearchSep = self.query.split()
-        #For each item in database
         for x in range (0, len(itemName)):
-            #Seperates current by word.
             currentCompare = itemName[x].split()
-            #For each word in current.
             for y in range (0, len(currentCompare)):
-                #For each word in user search
                 for i in range (0, len(userSearchSep)):
                     currentUserSearch = userSearchSep[i]
-                    #If current words are equivalent
                     if currentUserSearch == currentCompare[y]:
-                        #Add 100 to weight
                         self.itemWeight[x] += 100
-        #Removes spaces between words
+        #Letter weight, checks for similarities between letters of the users query and the items in the list.
         userSearchCondense = self.query.replace(" ", "")
-        #For each item in database
         for y in range(0, len(itemName)):
-            #Removes spaces between words
             currentCompareCondense = itemName[y].replace(" ", "")
-            #For each character in compare
             for x in range(0, len(currentCompareCondense)):
-                #For each character in user search
                 for i in range(0, len(userSearchCondense)):
-                    #If characters in user search and compare are equivalent
                     if userSearchCondense[i] ==  currentCompareCondense[x]:
-                        #Add 1 to weight
                         self.itemWeight[y] += 1
+        #Creating list of top five weighted items after weighting algorithms.
         itemWeightDelete = self.itemWeight.copy()
         itemWeightCopy = self.itemWeight.copy()
         itemWeightCopy.sort(reverse = True)
@@ -65,39 +59,46 @@ class Search:
             self.topFiveItem[x] = itemName[itemWeightDelete.index(itemWeightCopy[x])]
             itemWeightDelete.pop(itemWeightDelete.index(itemWeightCopy[x]))
 
+    #Function for displaying top five weighted items
     def displayTopFive(self):
         for x in range(0, len(self.topFiveItem)):
                 y = x + 1
                 print(y, ". " + self.topFiveItem[x].title() + " - ", itemPrice[itemName.index(self.topFiveItem[x])])
 
+    #Function for displaying final order information
     def completeOrder(self, index):
         print("Your order of " + self.topFiveItem[index - 1] + " will cost $", itemPrice[itemName.index(self.topFiveItem[index - 1])], "\nThanks for your order, have a good day") 
     
-    def getTopFiveItem(self):
-        return self.topFiveItem
-    
+    #Sorting function with parameter sortType to decide between price and item type sorting
     def sortOrder(self, sortType):
+        #Price sorting
         if sortType == 6:
+            #Creating top five price list
             topFivePrice = ["", "", "", "", ""]
             for x in range(0, len(self.topFiveItem)):
                 topFivePrice[x] = itemPrice[itemName.index(self.topFiveItem[x])]
+            #Sorting top five price list, then rearranging top five item list accordingly
             topFivePriceCopy = topFivePrice.copy()
             topFivePriceCopy.sort()
             topFiveItemCopy = self.topFiveItem.copy()
             for y in range(0, len(self.topFiveItem)):
                 self.topFiveItem[y] = topFiveItemCopy[topFivePrice.index(topFivePriceCopy[y])]
                 topFivePrice[topFivePrice.index(topFivePriceCopy[y])] = 0
+        #Item type sorting
         else:
+            #Asks user for type
             for y in range(0, len(itemTypes)):
                 print(y + 1, ". " + itemTypes[y])
             type  = int(input("Please enter the number corresponding to the desired item type: \n")) - 1
             if 0 < type < 8:
                 typePopCount = 0
+                #Removes items not corresponding to type
                 for x in range(0, 5):
                     if itemTypeNumbers[itemName.index(self.topFiveItem[x - typePopCount])] != type:
                         self.topFiveItem.pop(x - typePopCount)
                         typePopCount+=1
 
+#Static function for requesting the users finalized item choice, or a sorting type.
 def OrderChoice():
     repeat = True
     while repeat:
